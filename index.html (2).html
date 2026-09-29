@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UPI App Market Share Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#F3F4F9;--surface:#fff;--ink:#16193A;--muted:#5A5F7D;--line:#DADCE8;--soft:#ECEEF5;--bar:#2F3BA8;
+--display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--body:"Instrument Sans","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11132A;--surface:#1A1D3A;--ink:#EEF0FA;--muted:#A8ADCA;--line:#2E3259;--soft:#23274A;--bar:#8B94F2}}
+:root[data-theme="dark"]{--bg:#11132A;--surface:#1A1D3A;--ink:#EEF0FA;--muted:#A8ADCA;--line:#2E3259;--soft:#23274A;--bar:#8B94F2}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5}
+.wrap{max-width:1000px;margin:0 auto;padding:36px 20px 56px}
+h1,h2{font-family:var(--display);margin:0;letter-spacing:-.015em}
+h1{font-size:clamp(1.8rem,4.5vw,2.8rem);font-weight:800;line-height:1.05}
+h2{font-size:1.25rem;font-weight:700;margin:40px 0 12px}
+.sub{color:var(--muted);margin:8px 0 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.stack{display:flex;height:56px;border-radius:10px;overflow:hidden}
+.stack div{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px}
+.legend span{display:flex;align-items:center;gap:7px;font-size:.95rem}.legend i{width:12px;height:12px;border-radius:3px}
+.legend b{font-family:var(--display)}
+input{font:inherit;color:inherit;width:100%;max-width:340px;padding:10px 14px;border:1px solid var(--line);background:var(--surface);border-radius:10px;margin-bottom:12px}
+:focus-visible{outline:2px solid var(--bar);outline-offset:2px}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font-size:.85rem;color:var(--muted);font-weight:600;background:var(--soft)}
+td.rank{color:var(--muted);width:44px}td.app{font-weight:600}td.co{color:var(--muted)}
+td.pct{font-family:var(--display);font-weight:700;font-size:1.05rem;white-space:nowrap;width:110px}
+td.pct small{display:block;font-family:var(--body);font-weight:400;font-size:.75rem;color:var(--muted)}
+td.barc{width:38%}
+.track{height:12px;background:var(--soft);border-radius:6px}.track span{display:block;height:100%;border-radius:6px;background:var(--bar)}
+tr.low td.pct{color:var(--muted);font-weight:600;font-size:.95rem}
+footer{margin-top:24px;color:var(--muted);font-size:.85rem;max-width:72ch}
+</style></head><body><div class="wrap">
+<h1>UPI app market share</h1>
+<p class="sub">Share of all UPI transactions in India, by number of transactions. August 2026 unless marked.</p>
+
+<h2>Who dominates</h2>
+<div class="card"><div class="stack" id="stack"></div><div class="legend" id="legend"></div></div>
+
+<h2>Every app</h2>
+<input id="q" type="search" placeholder="Search an app" aria-label="Search an app">
+<div class="tablebox"><table><thead><tr><th>#</th><th>App</th><th>Company</th><th>Share</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+
+<footer>Source: NPCI data as reported by Inc42 (Aug 2026), Business Standard (WhatsApp Pay, Jul 2026) and Trak.in citing NPCI (CRED, May 2026). “Under 0.6%” means the app was outside NPCI's top 10 UPI apps, where the 10th-largest app had 0.58% (May 2026); NPCI does not report these apps individually in public summaries.</footer>
+</div>
+<script>
+const APPS=[{"company": "PhonePe", "app": "PhonePe", "share": 45.9, "month": "Aug 2026"}, {"company": "Paytm", "app": "Paytm UPI", "share": 8.1, "month": "Aug 2026"}, {"company": "CRED", "app": "CRED UPI", "share": 0.68, "month": "May 2026"}, {"company": "Navi", "app": "Navi", "share": 4.4, "month": "Aug 2026"}, {"company": "Groww", "app": "Groww", "share": null, "month": null}, {"company": "MobiKwik", "app": "MobiKwik", "share": null, "month": null}, {"company": "BharatPe", "app": "BharatPe", "share": null, "month": null}, {"company": "POP", "app": "POP UPI", "share": null, "month": null}, {"company": "super.money", "app": "Super Money", "share": 1.7, "month": "Aug 2026"}, {"company": "FamPay", "app": "FamApp", "share": 0.9, "month": "Aug 2026"}, {"company": "Kiwi", "app": "Kiwi UPI", "share": null, "month": null}, {"company": "Slice", "app": "Slice", "share": null, "month": null}, {"company": "Jupiter", "app": "Jupiter", "share": null, "month": null}, {"company": "Fi Money", "app": "Fi", "share": null, "month": null}, {"company": "INDmoney", "app": "INDmoney", "share": null, "month": null}, {"company": "Angel One", "app": "Angel UPI", "share": null, "month": null}, {"company": "Bajaj Finserv", "app": "Bajaj Pay", "share": null, "month": null}, {"company": "Fibe", "app": "Fibe", "share": null, "month": null}, {"company": "KreditBee", "app": "KreditBee", "share": null, "month": null}, {"company": "MoneyView", "app": "MoneyView", "share": null, "month": null}, {"company": "mPokket", "app": "mPokket", "share": null, "month": null}, {"company": "CASHe", "app": "CASHe", "share": null, "month": null}, {"company": "Stashfin", "app": "Stashfin", "share": null, "month": null}, {"company": "Uni Cards", "app": "Uni", "share": null, "month": null}, {"company": "OneCard", "app": "OneCard", "share": null, "month": null}, {"company": "Axio", "app": "Axio", "share": null, "month": null}, {"company": "Freo", "app": "Freo", "share": null, "month": null}, {"company": "TrueBalance", "app": "TrueBalance", "share": null, "month": null}, {"company": "OBOPAY", "app": "OBOPAY", "share": null, "month": null}, {"company": "Freecharge", "app": "Freecharge", "share": null, "month": null}, {"company": "Jio Financial", "app": "JioFinance", "share": null, "month": null}, {"company": "Spice Money", "app": "Spice Money", "share": null, "month": null}, {"company": "PayNearby", "app": "PayNearby", "share": null, "month": null}, {"company": "Oxigen", "app": "Oxigen Wallet", "share": null, "month": null}, {"company": "Jar", "app": "Jar", "share": null, "month": null}, {"company": "Dhani", "app": "Dhani", "share": null, "month": null}, {"company": "CredAble", "app": "CredAble", "share": null, "month": null}, {"company": "Google", "app": "Google Pay", "share": 32.4, "month": "Aug 2026"}, {"company": "NPCI", "app": "BHIM", "share": 1.04, "month": "Aug 2026"}, {"company": "Meta", "app": "WhatsApp Pay", "share": 0.71, "month": "Jul 2026"}, {"company": "Amazon", "app": "Amazon Pay", "share": null, "month": null}, {"company": "Hero FinCorp", "app": "Hero FinCorp UPI", "share": null, "month": null}];
+const STACK=[["PhonePe",45.9,"#5F259F"],["Google Pay",32.4,"#1A73E8"],["Paytm",8.1,"#0086B3"],["Navi",4.4,"#11875A"],["super.money",1.7,"#C2417A"],["BHIM",1.04,"#D0620F"],["FamApp",0.9,"#8A6418"],["All other apps",5.56,"#7D8199"]];
+document.getElementById("stack").innerHTML=STACK.map(([n,s,c])=>`<div style="flex:${s};background:${c}" title="${n}: ${s}%">${s>=8?n+" "+s+"%":""}</div>`).join("");
+document.getElementById("legend").innerHTML=STACK.map(([n,s,c])=>`<span><i style="background:${c}"></i>${n} <b>${s}%</b></span>`).join("");
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sorted=APPS.slice().sort((a,b)=>(b.share??-1)-(a.share??-1)||a.app.localeCompare(b.app));
+const max=45.9;
+function render(){
+ const q=document.getElementById("q").value.trim().toLowerCase();
+ const list=sorted.map((a,i)=>({...a,rank:a.share!==null?i+1:""})).filter(a=>!q||(a.app+" "+a.company).toLowerCase().includes(q));
+ document.getElementById("rows").innerHTML=list.length?list.map(a=>a.share!==null
+  ?`<tr><td class="rank">${a.rank}</td><td class="app">${esc(a.app)}</td><td class="co">${esc(a.company)}</td><td class="pct">${a.share}%${a.month!=="Aug 2026"?`<small>${a.month}</small>`:""}</td><td class="barc"><div class="track"><span style="width:${Math.max(a.share/max*100,1)}%"></span></div></td></tr>`
+  :`<tr class="low"><td class="rank"></td><td class="app">${esc(a.app)}</td><td class="co">${esc(a.company)}</td><td class="pct">Under 0.6%</td><td class="barc"><div class="track"><span style="width:0.6%"></span></div></td></tr>`).join("")
+  :`<tr><td colspan="5" style="padding:30px;text-align:center;color:var(--muted)">No app matches. Try another name.</td></tr>`;
+}
+document.getElementById("q").addEventListener("input",render);render();
+</script></body></html>
